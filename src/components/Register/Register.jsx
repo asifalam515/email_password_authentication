@@ -1,10 +1,19 @@
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import app from "../../firebase/firebase.config";
 const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-
-    console.log(email, password);
+    const auth = getAuth(app);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const loggedInUser = result.user;
+        console.log(loggedInUser);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="mx-auto">
