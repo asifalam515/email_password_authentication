@@ -1,4 +1,9 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import app from "../../firebase/firebase.config";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -13,6 +18,7 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
+    const name = e.target.name.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked;
 
@@ -37,6 +43,18 @@ const Register = () => {
         const loggedInUser = result.user;
         console.log(loggedInUser);
         setSuccess("user created successfully");
+        // update user profile
+        updateProfile(result.user, {
+          displayName: name,
+          photoURL:
+            "https://media.gettyimages.com/id/1711546167/photo/guwahati-india-shakib-al-hasan-of-bangladesh-poses-for-a-portrait-ahead-of-the-icc-mens.jpg?s=612x612&w=gi&k=20&c=58OYvHser3EhyvI8QUKnKVrGnMivmazsS8RoEjvm0fc=",
+        }).then(() => {
+          console.log("profile updated");
+        });
+        // send verification email
+        sendEmailVerification(loggedInUser).then(() => {
+          alert("Please check Your email and verify it now!!");
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -53,7 +71,13 @@ const Register = () => {
             className="mb-4 w-full p-2"
             type="email"
             name="email"
-            id=""
+          />
+          <br />
+          <input
+            placeholder="Your Name Please"
+            className="mb-4 w-full p-2"
+            type="text"
+            name="name"
           />
           <br />
           <div className="relative">

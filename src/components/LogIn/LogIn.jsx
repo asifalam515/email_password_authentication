@@ -50,6 +50,11 @@ const LogIn = () => {
       .then((result) => {
         setLoginMessage("User Logged In successfully");
         console.log(result.user);
+        if (result.user.emailVerified) {
+          setLoginMessage("Your Email is Verified");
+        } else {
+          alert("Please Verify your email address");
+        }
       })
       .catch((error) => {
         console.log(error);
