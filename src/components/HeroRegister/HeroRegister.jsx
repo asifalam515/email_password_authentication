@@ -1,20 +1,33 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useState } from "react";
+import app from "../../firebase/firebase.config";
 
 const HeroRegister = () => {
+  const [registerError, setRegisterError] = useState("");
+  const [message, setMessage] = useState("");
   const handleRegister = (e) => {
     e.preventDefault();
+    setRegisterError("");
+    setMessage("");
     const email = e.target.email.value;
     const password = e.target.password.value;
+    if (password.length < 6) {
+      setRegisterError("too weak password");
+      return;
+    }
     console.log(email, password);
+    const auth = getAuth(app);
     // cerate user
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const loggedInUser = result.user;
+        setMessage("User Created");
         console.log(loggedInUser);
       })
       .catch((error) => {
         console.log(error);
+        setRegisterError(error.message);
       });
   };
   return (
@@ -67,6 +80,10 @@ const HeroRegister = () => {
           </div>
         </div>
       </div>
+      {registerError && (
+        <h1 className="text-red-700 text-3xl">{registerError}</h1>
+      )}
+      {message && <h1 className="text-green-500 text-2xl">{message}</h1>}
     </div>
   );
 };
