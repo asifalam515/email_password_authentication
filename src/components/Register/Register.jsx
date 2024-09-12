@@ -3,14 +3,19 @@ import app from "../../firebase/firebase.config";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 const Register = () => {
   const [registerError, setRegisterError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // event handler
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const accepted = e.target.terms.checked;
+
     // reset messages
     setRegisterError("");
     setSuccess("");
@@ -20,6 +25,9 @@ const Register = () => {
       return;
     } else if (!/[A-Z]/.test(password)) {
       setRegisterError("Your password should have atleast one uppercase");
+      return;
+    } else if (!accepted) {
+      setRegisterError("Please accepts Terms and Condition");
       return;
     }
 
@@ -48,17 +56,30 @@ const Register = () => {
             id=""
           />
           <br />
-          <input
-            placeholder="Enter password"
-            className="mb-4 w-full p-2"
-            type={showPassword ? "text" : "password"}
-            name="password"
-            id=""
-          />
-          <span onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
-          </span>
+          <div className="relative">
+            <input
+              placeholder="Enter password"
+              className="mb-4 w-full p-2"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              id=""
+            />
+            <span
+              className="absolute top-3 right-2"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
+            </span>
+          </div>
           <br />
+          <div className="mb-2">
+            <input type="checkbox" name="terms" id="terms" />
+            <label className="ml-2 mb-4" htmlFor="terms">
+              Accept Our <a href="">Terms</a> and Conditions
+            </label>
+          </div>
+          <br />
+
           <input
             className="mb-4 w-full btn btn-success"
             type="submit"
@@ -67,6 +88,11 @@ const Register = () => {
         </form>
         {registerError && <p className="text-red-700"> {registerError} </p>}
         {success && <p className="text-green-700">{success}</p>}
+      </div>
+      <div>
+        <h1>
+          Already Have an Account ? Please <Link to="/login">Log in</Link>{" "}
+        </h1>
       </div>
     </div>
   );
